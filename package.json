@@ -1,0 +1,45 @@
+{
+  "name": "@jubilee-protocol/openclaw-skill",
+  "version": "1.0.0",
+  "description": "OpenClaw skill for interacting with Jubilee Protocol vaults and managing AI agent treasuries",
+  "main": "index.js",
+  "scripts": {
+    "status": "node lib/status.js",
+    "balance": "node lib/balance.js",
+    "deposit": "node lib/deposit.js",
+    "withdraw": "node lib/withdraw.js",
+    "donate-yield": "node lib/donate.js",
+    "war-room": "node lib/war-room.js",
+    "test": "node test/integration.test.js"
+  },
+  "keywords": [
+    "openclaw",
+    "jubilee",
+    "defi",
+    "yield",
+    "treasury",
+    "ai-agents",
+    "base",
+    "ethereum"
+  ],
+  "author": "Jubilee Labs",
+  "license": "MIT",
+  "dependencies": {
+    "ethers": "^6.10.0",
+    "@solana/web3.js": "^1.87.6",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.5",
+    "chalk": "^4.1.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jubilee-Protocol/openclaw-skill-jubilee.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Jubilee-Protocol/openclaw-skill-jubilee/issues"
+  },
+  "homepage": "https://jubileeprotocol.xyz"
+}
