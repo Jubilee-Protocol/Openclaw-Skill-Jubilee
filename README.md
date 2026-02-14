@@ -66,7 +66,6 @@ If you're using the official `jubilee-agent` repository, this skill is included 
 ### 1. Environment Variables
 
 Create a `.env` file in the skill root:
-
 ```bash
 # RPC Providers (Optional - defaults to public endpoints)
 RPC_BASE=https://mainnet.base.org
@@ -89,7 +88,6 @@ DEBUG=false
 ### 2. Wallet Setup
 
 The skill expects a wallet file in OpenClaw's standard location:
-
 ```
 ~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json
 ```
@@ -126,7 +124,6 @@ You can ask your agent to perform these tasks naturally:
 - **"Donate 10 USDC to [address]"** → Runs: `npm run donate-yield 10 0x...`
 
 ### Direct CLI Usage
-
 ```bash
 # Check vault stats (TVL, APY)
 npm run status [chain]
@@ -151,11 +148,11 @@ npm run war-room [chain]
 ```
 
 ## Directory Structure
-
 ```
 jubilee-openclaw-skill/
 ├── lib/                        # Core implementation
 │   ├── utils.js               # Wallet & provider utilities
+│   ├── validators.js          # Input validation
 │   ├── status.js              # Vault status checker
 │   ├── balance.js             # Treasury balance viewer
 │   ├── deposit.js             # Deposit handler
@@ -168,6 +165,8 @@ jubilee-openclaw-skill/
 ├── package.json                # Dependencies & scripts
 ├── SKILL.md                    # Prompt engineering layer (for AI)
 ├── README.md                   # This file (for humans)
+├── INSTALL.md                  # Step-by-step setup guide
+├── PROJECT_SUMMARY.md          # Technical overview
 ├── .env.example               # Environment template
 └── LICENSE                     # MIT License
 ```
@@ -192,7 +191,6 @@ Full deployment details: [Jubilee Protocol Docs](https://docs.jubileeprotocol.xy
 ## Testing
 
 ### Run Integration Tests
-
 ```bash
 npm test
 ```
@@ -241,19 +239,25 @@ npm run war-room baseSepolia
 
 ### Common Issues
 
-#### 1. "Wallet file not found"
+#### 1. "Invalid input" errors
+**Solution:** The skill validates all inputs. Check:
+- Amounts must be positive numbers
+- Addresses must be valid Ethereum addresses (0x...)
+- Chain names must be: `base`, `baseSepolia`, `solana`, etc.
+
+#### 2. "Wallet file not found"
 **Solution:** Create wallet at `~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json`
 
-#### 2. "Insufficient funds for gas"
+#### 3. "Insufficient funds for gas"
 **Solution:** Fund wallet with ETH (0.01 ETH minimum recommended)
 
-#### 3. "RPC connection failed"
+#### 4. "RPC connection failed"
 **Solution:** Configure custom RPC in `.env`:
 ```bash
 RPC_BASE=https://your-custom-rpc-url
 ```
 
-#### 4. "Transaction would likely fail"
+#### 5. "Transaction would likely fail"
 **Solution:** Check:
 - Asset balance (via `npm run balance`)
 - Token approval status
@@ -278,17 +282,76 @@ This skill embodies "Nasdaq meets Sistine Chapel":
 
 ## Security
 
+Security is the cornerstone of the Jubilee Protocol. Our approach is multi-layered, combining battle-tested code, rigorous auditing, and economic incentives to protect user funds.
+
 ### Smart Contract Security
-- ✅ All vaults audited (92/100 score by Sherlock)
-- ✅ ERC-4626 compliant (battle-tested standard)
-- ✅ Multi-sig governance (24hr timelock)
-- ✅ Circuit breakers for emergencies
+
+- **Audits**: All core contracts have achieved a **92/100 audit score** and have undergone comprehensive testing, including stress tests and fuzz testing. We are committed to continuous audits for all new products and major upgrades.
+- **Inherited Security**: By deploying on established L2s like Base and zkSync, Jubilee inherits the security of their underlying infrastructure, which has been battle-tested with billions of dollars in value.
+- **Elimination of Bridge Risk**: By design, the protocol does not operate its own cross-chain asset bridge. Vaults on different chains are independent instances, which completely removes the risk of a native bridge exploit, a common and catastrophic failure point in DeFi.
+- **ERC-4626 Standard**: By building on a widely adopted standard, we reduce smart contract risk and benefit from the extensive auditing and community review of the standard itself.
+- **Circuit Breakers**: Automated safety mechanisms are built into each vault to pause operations in the event of extreme market volatility or detected exploits.
 
 ### Operational Security
-- 🔐 Private keys never exposed in logs
-- 🔐 Wallet files in `.gitignore`
-- 🔐 Environment variables for sensitive data
-- 🔐 Testnet-first development flow
+
+- ✅ Private keys never exposed in logs or error messages
+- ✅ Wallet files automatically excluded via `.gitignore`
+- ✅ Environment variables for all sensitive configuration
+- ✅ Testnet-first development flow
+- ✅ Input validation on all user inputs
+- ✅ Gas estimation before transaction submission
+
+### ⚠️ Wallet Security Notice
+
+**Current Implementation: Development Mode**
+
+This skill currently uses plaintext private keys stored in JSON files for ease of development and testing. This approach is:
+
+**✅ Acceptable for:**
+- Testing on testnets (Base Sepolia, Solana Devnet)
+- Development and learning environments
+- Low-value agents with treasuries under $1,000
+- Personal experimental projects
+
+**❌ NOT acceptable for:**
+- Production agents managing treasuries over $10,000
+- Institutional or organizational use
+- Multi-user or shared environments
+- Unattended agents with significant holdings
+
+### Production Security Recommendations
+
+For production deployments with meaningful capital:
+
+1. **Use encrypted JSON keystores** with strong passwords stored in secure vaults
+2. **Store wallet files in encrypted storage** (e.g., AWS KMS, HashiCorp Vault)
+3. **Implement hardware wallet integration** for high-value signing operations
+4. **Use MPC/Fireblocks** for institutional-grade custody solutions
+5. **Enable multi-signature requirements** for large transactions
+6. **Implement transaction limits** and approval workflows
+7. **Set up monitoring and alerting** for suspicious activity
+
+### Security Roadmap
+
+| Timeline | Feature | Status |
+|----------|---------|--------|
+| **Q2 2026** | Encrypted JSON wallet support with password protection | 🔄 In Progress |
+| **Q3 2026** | Hardware wallet integration (Ledger, Trezor) | 📋 Planned |
+| **Q4 2026** | MPC custody integration (Fireblocks) | 📋 Planned |
+| **2027** | Multi-signature transaction support | 📋 Backlog |
+
+### Compliance
+
+- **FASB ASU 2023-08**: User-facing dashboards provide necessary reporting tools for institutions to comply with FASB accounting standards for crypto assets.
+- **Audit Trail**: All transactions are permanently recorded on-chain and can be exported for compliance purposes.
+
+### Reporting Security Issues
+
+If you discover a security vulnerability, please email: **security@jubileeprotocol.xyz**
+
+**Do NOT** open a public GitHub issue. We take all security reports seriously and will respond within 24 hours.
+
+---
 
 ## Roadmap
 
@@ -297,6 +360,7 @@ This skill embodies "Nasdaq meets Sistine Chapel":
 - [x] Deposit & withdrawal flows
 - [x] War room strategic reports
 - [x] Yield donation
+- [x] Input validation & error handling
 - [ ] Solana mainnet support (jSOLi)
 - [ ] Ethereum mainnet support (jETHs)
 - [ ] Automated yield harvesting (cron)
@@ -316,7 +380,10 @@ We welcome contributions from stewardship-aligned builders!
 
 ## Support
 
+- 🌐 **Website:** [jubileeprotocol.xyz](https://jubileeprotocol.xyz)
+- 📧 **Email:** contact@jubileeprotocol.xyz
 - 🐦 **Twitter:** [@JubileeProtocol](https://twitter.com/JubileeProtocol)
+- 📖 **Docs:** [docs.jubileeprotocol.xyz](https://docs.jubileeprotocol.xyz)
 - 🐛 **Issues:** [GitHub Issues](https://github.com/Jubilee-Protocol/openclaw-skill-jubilee/issues)
 
 ## License
