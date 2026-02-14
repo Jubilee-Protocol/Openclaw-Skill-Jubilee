@@ -316,8 +316,6 @@ We welcome contributions from stewardship-aligned builders!
 
 ## Support
 
-- 📖 **Documentation:** [docs.jubileeprotocol.xyz](https://docs.jubileeprotocol.xyz)
-- 💬 **Discord:** [discord.gg/jubilee](https://discord.gg/jubilee)
 - 🐦 **Twitter:** [@JubileeProtocol](https://twitter.com/JubileeProtocol)
 - 🐛 **Issues:** [GitHub Issues](https://github.com/Jubilee-Protocol/openclaw-skill-jubilee/issues)
 
