@@ -1,0 +1,24 @@
+# Environment variables (API keys, RPC URLs, secrets)
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+
+# Wallet files
+*.json.key
+wallets/
+**/agent_wallet.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*

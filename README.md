@@ -30,6 +30,7 @@ Autonomous agents have **burn rates** — API costs (Claude, OpenAI), RPC access
 
 - 🏦 **Treasury Management** — View balances across chains (Base, Solana, Ethereum) and manage yield-bearing assets
 - 🌾 **Yield Farming** — Deposit idle capital into Jubilee Vaults (jBTCi, jUSDi, jETHs, jSOLi) to earn sustainable yield
+- 🔄 **Native Swaps** — Swap tokens (ETH, USDC, cbBTC, WETH, WBTC) on Base via 0x aggregator with best-price routing
 - ⚔️ **War Room** — Generate daily "Steward's Reports" analyzing git activity, treasury health, and strategic priorities
 - 🤲 **First Fruits** — Programmable stewardship logic to donate yield to charitable causes or other agents
 - 🔗 **Multi-Chain** — Supports Base (mainnet), Solana (devnet), Ethereum (testnet)
@@ -65,17 +66,13 @@ If you're using the official `jubilee-agent` repository, this skill is included 
 
 ### 1. Environment Variables
 
-Create a `.env` file in the skill root:
+Create a `.env` file in the skill root (see `.env.example`):
 ```bash
 # RPC Providers (Optional - defaults to public endpoints)
 RPC_BASE=https://mainnet.base.org
-RPC_SOLANA=https://api.mainnet-beta.solana.com
-
-# Protocol Addresses (Optional - defaults to official mainnet)
-# These are pre-configured in config.js
+RPC_BASE_SEPOLIA=https://sepolia.base.org
 
 # Wallet (Managed by OpenClaw)
-# Ensure ~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json exists
 WALLET_PATH=/path/to/custom/wallet.json
 
 # Default chain for operations
@@ -83,6 +80,10 @@ DEFAULT_CHAIN=base
 
 # Debug mode (verbose logging)
 DEBUG=false
+
+# 0x Swap API Key (optional but recommended - increases rate limits)
+# Get yours at: https://0x.org/docs/introduction/getting-started
+ZERO_EX_API_KEY=your_0x_api_key_here
 ```
 
 ### 2. Wallet Setup
@@ -121,6 +122,7 @@ You can ask your agent to perform these tasks naturally:
 - **"Run the morning war room report"** → Runs: `npm run war-room`
 - **"Deposit 100 USDC into the vault"** → Runs: `npm run deposit 100 USDC`
 - **"What's our current balance?"** → Runs: `npm run balance`
+- **"Swap 0.01 ETH to USDC"** → Runs: `npm run swap 0.01 ETH USDC`
 - **"Donate 10 USDC to [address]"** → Runs: `npm run donate-yield 10 0x...`
 
 ### Direct CLI Usage
@@ -138,6 +140,11 @@ npm run deposit <amount> <asset> [chain]
 # Withdraw assets
 npm run withdraw <amount> <vault> [chain]
 # Example: npm run withdraw 50 jUSDi base
+
+# Swap tokens (via 0x aggregator)
+npm run swap <amount> <fromToken> <toToken> [chain]
+# Example: npm run swap 0.01 ETH USDC base
+# Example: npm run swap 50 USDC cbBTC base
 
 # Donate yield
 npm run donate-yield <amount> <recipient_address> [chain]
@@ -157,6 +164,7 @@ jubilee-openclaw-skill/
 │   ├── balance.js             # Treasury balance viewer
 │   ├── deposit.js             # Deposit handler
 │   ├── withdraw.js            # Withdrawal handler
+│   ├── swap.js                # DEX swap via 0x API
 │   ├── donate.js              # Yield donation handler
 │   └── war-room.js            # Strategic report generator
 ├── test/                       # Integration tests
@@ -361,6 +369,7 @@ If you discover a security vulnerability, please email: **security@jubileeprotoc
 - [x] War room strategic reports
 - [x] Yield donation
 - [x] Input validation & error handling
+- [x] Native DEX swaps via 0x API (ETH, USDC, cbBTC, WETH, WBTC)
 - [ ] Solana mainnet support (jSOLi)
 - [ ] Ethereum mainnet support (jETHs)
 - [ ] Automated yield harvesting (cron)
