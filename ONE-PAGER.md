@@ -113,4 +113,4 @@ npm run status base     # no wallet needed — see live vault data
 
 **Built by [Jubilee Labs](https://jubileelabs.xyz)** · Governed by Hundredfold Foundation
 
-[Website](https://jubileeprotocol.xyz) · [Docs](https://docs.jubileeprotocol.xyz) · [GitHub](https://github.com/Jubilee-Protocol) · [Twitter](https://twitter.com/JubileeProtocol)
+[Website](https://jubileeprotocol.xyz) · [Docs](https://docs.jubileeprotocol.xyz) · [GitHub](https://github.com/Jubilee-Protocol) · [Twitter](https://twitter.com/JubileeProtocol) · [![Donate Crypto](https://img.shields.io/badge/Donate-Crypto-f7931a?logo=bitcoin&logoColor=white)](https://commerce.coinbase.com/checkout/122a2979-e559-44b9-bb9d-2ff0c6a3025b)

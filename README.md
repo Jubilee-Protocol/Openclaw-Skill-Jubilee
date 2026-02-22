@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Base](https://img.shields.io/badge/Base-Mainnet-green)](https://basescan.org)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-purple)](https://github.com/openclaw/openclaw)
+[![Donate Crypto](https://img.shields.io/badge/Donate-Crypto-f7931a?logo=bitcoin&logoColor=white)](https://commerce.coinbase.com/checkout/122a2979-e559-44b9-bb9d-2ff0c6a3025b)
 
 > **"Nasdaq meets Sistine Chapel."**  
 > The financial operating system for stewardship-aligned AI agents.
