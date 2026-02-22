@@ -12,9 +12,10 @@ Agents deposit idle capital into Jubilee Vaults to earn yield, track performance
 If `Yield ≥ Burn Rate → Agent Lives Forever`
 
 ## Supported Networks & Assets
-- **Base (Mainnet):** `jBTCi`, `jUSDi` ✅ LIVE
-- **Solana (Devnet):** `jSOLi`
-- **Ethereum (Sepolia):** `jETHs`
+- **Base (Mainnet):** `jBTCi`, `jUSDi` ✅ LIVE — swaps via 0x & Uniswap
+- **Ethereum (Mainnet):** swaps via Uniswap
+- **Solana (Mainnet/Devnet):** `jSOLi` — swaps via Jupiter
+- **Bitcoin (Lightning Network):** payments via LND
 
 ## Tools
 
@@ -157,6 +158,98 @@ npm run war-room [chain]
 - Weekly strategic planning
 - Before major decisions
 
+### `jubilee uniswap-swap`
+**Purpose:** Swap tokens on Ethereum or Base via Uniswap V3 with automatic best-fee-tier routing.
+
+**Usage:**
+```bash
+npm run uniswap-swap <amount> <fromToken> <toToken> [chain]
+```
+
+**Examples:**
+```bash
+npm run uniswap-swap 0.01 ETH USDC base
+npm run uniswap-swap 100 USDC WETH ethereum
+npm run uniswap-swap 50 USDC DAI base
+```
+
+**Output:**
+- Uniswap quote with best pool fee tier
+- Expected output amount with 1% slippage protection
+- Transaction hash and explorer link
+
+**When to use:**
+- Swapping on Ethereum mainnet (Uniswap is native)
+- Swapping larger amounts where Uniswap liquidity is deeper
+- When 0x is unavailable or rate-limited
+
+### `jubilee jupiter-swap`
+**Purpose:** Swap tokens on Solana via Jupiter Ultra API — the best aggregator for Solana.
+
+**Usage:**
+```bash
+npm run jupiter-swap <amount> <fromToken> <toToken>
+```
+
+**Examples:**
+```bash
+npm run jupiter-swap 1 SOL USDC
+npm run jupiter-swap 50 USDC JUP
+npm run jupiter-swap 100 USDT BONK
+```
+
+**Supported Tokens:** SOL, USDC, USDT, JUP, BONK, JITOSOL, MSOL, RAY, PYTH, WIF (or any mint address)
+
+**Requirements:**
+- `JUPITER_API_KEY` in `.env` (free from [portal.jup.ag](https://portal.jup.ag))
+- Solana wallet (standard CLI format or OpenClaw format)
+
+**When to use:**
+- Any token swap on Solana
+- Before depositing into jSOLi vault
+- Rebalancing Solana treasury positions
+
+### `jubilee lightning-pay`
+**Purpose:** Pay BOLT11 Lightning invoices, check node balance, decode invoices, and make L402 API payments on Bitcoin.
+
+**Usage:**
+```bash
+npm run lightning-pay <command> [args]
+```
+
+**Commands:**
+```bash
+# Pay a Lightning invoice
+npm run lightning-pay pay lnbc10u1p... [max_sats]
+
+# Check node balance (on-chain + channels)
+npm run lightning-pay balance
+# or shortcut:
+npm run lightning-balance
+
+# Decode an invoice without paying
+npm run lightning-pay decode lnbc10u1p...
+
+# Make an L402 (paid API) request
+npm run lightning-pay lnget https://api.example.com/data 500
+```
+
+**Requirements:**
+- Running LND node with REST API, OR `lncli` on PATH
+- Configure `LND_REST_HOST`, `LND_MACAROON_PATH`, `LND_TLS_CERT_PATH` in `.env`
+- Install `lnget` for L402 requests: `go install github.com/lightninglabs/lightning-agent-tools/cmd/lnget@latest`
+
+**Safety:**
+- Default max payment: 100,000 sats (configurable)
+- Routing fee capped at 1% of payment amount
+- Zero-amount invoices rejected for safety
+
+**When to use:**
+- Paying for L402-gated APIs (AI services, data feeds)
+- Bitcoin-denominated payments
+- Agent-to-agent micropayments
+- Checking Lightning node health
+
 ## Error Handling
 
 All tools implement robust error handling:
@@ -250,17 +343,22 @@ This skill aligns agents with the "Nasdaq meets Sistine Chapel" ethos:
 ```
 jubilee-openclaw-skill/
 ├── lib/
-│   ├── status.js       # Vault health checks
-│   ├── balance.js      # Treasury balance
-│   ├── deposit.js      # Deposit to vaults
-│   ├── withdraw.js     # Withdraw from vaults
-│   ├── donate.js       # Yield donation
-│   ├── war-room.js     # Strategic reports
-│   └── utils.js        # Shared utilities
-├── config.js           # Contract addresses & ABIs
-├── package.json        # Dependencies
-├── SKILL.md           # This file
-└── README.md          # Installation guide
+│   ├── status.js          # Vault health checks
+│   ├── balance.js         # Treasury balance
+│   ├── deposit.js         # Deposit to vaults
+│   ├── withdraw.js        # Withdraw from vaults
+│   ├── donate.js          # Yield donation
+│   ├── swap.js            # 0x swap (Base)
+│   ├── uniswap-swap.js    # Uniswap swap (Ethereum/Base)
+│   ├── jupiter-swap.js    # Jupiter swap (Solana)
+│   ├── lightning-pay.js   # Lightning payments (Bitcoin)
+│   ├── war-room.js        # Strategic reports
+│   ├── validators.js      # Input validation
+│   └── utils.js           # Shared utilities
+├── config.js              # Contract addresses, ABIs, protocol configs
+├── package.json           # Dependencies
+├── SKILL.md               # This file
+└── README.md              # Installation guide
 ```
 
 ## Advanced Usage

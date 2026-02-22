@@ -6,177 +6,215 @@
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-purple)](https://github.com/openclaw/openclaw)
 
 > **"Nasdaq meets Sistine Chapel."**  
-> The operating system for stewardship-aligned AI agents.
+> The financial operating system for stewardship-aligned AI agents.
 
-## Overview
+---
 
-**Jubilee** is a skill for [OpenClaw](https://github.com/openclaw/openclaw) that enables AI agents to natively interact with the **Jubilee Protocol**. It transforms an agent from a simple chatbot into a **Steward** capable of managing a treasury, earning yield, and making strategic decisions based on Kingdom principles.
+## Quick Start (3 commands)
 
-### The Problem: Agent Mortality
+```bash
+git clone https://github.com/Jubilee-Protocol/openclaw-skill-jubilee.git jubilee
+cd jubilee && npm install
+cp .env.example .env  # then edit .env with your keys
+```
 
-Autonomous agents have **burn rates** — API costs (Claude, OpenAI), RPC access, hosting fees, gas. When the balance hits zero, the agent dies.
+That's it. The skill works immediately for **read-only** operations (status, balance, war room) with zero configuration. Only **write** operations (swap, deposit, withdraw) require wallet and API keys.
 
-### The Solution: Endowment-as-a-Service
+---
 
-| Principal | APY | Monthly Yield | Agent Burn Rate | Status |
-|-----------|-----|---------------|----------------|--------|
-| $5,000 USDC | 8% | ~$33/mo | $20/mo (Claude API) | 🟢 **IMMORTAL** |
-| $10,000 USDC | 8% | ~$66/mo | $50/mo (OpenAI + RPC) | 🟢 **IMMORTAL** |
-| $25,000 USDC | 10% | ~$208/mo | $150/mo (Full Stack) | 🟢 **IMMORTAL** |
+## What Is This?
+
+Jubilee is a **skill** (plugin) for AI coding agents that gives them the ability to manage a treasury across **4 chains**:
+
+| Chain | Protocol | What the Agent Can Do | Required Config |
+|-------|----------|----------------------|-----------------|
+| **Base** | 0x + Uniswap | Swap, deposit, withdraw, earn yield | EVM wallet |
+| **Ethereum** | Uniswap V3 | Swap tokens | EVM wallet |
+| **Solana** | Jupiter Ultra | Swap any SPL token | Solana wallet + Jupiter API key |
+| **Bitcoin** | Lightning (LND) | Pay invoices, L402 API payments | Running LND node |
+
+### The Core Idea
+
+Agents have burn rates (API costs, hosting, gas). Jubilee lets agents deposit idle capital into **yield-bearing vaults** so they can fund themselves from yield instead of depleting principal.
 
 > **If Yield ≥ Burn Rate → Agent Lives Forever**
 
-## Features
+| Principal | APY | Monthly Yield | Typical Burn Rate | Status |
+|-----------|-----|---------------|-------------------|--------|
+| $5,000 USDC | 8% | ~$33/mo | $20/mo | 🟢 **IMMORTAL** |
+| $10,000 USDC | 8% | ~$66/mo | $50/mo | 🟢 **IMMORTAL** |
+| $25,000 USDC | 10% | ~$208/mo | $150/mo | 🟢 **IMMORTAL** |
 
-- 🏦 **Treasury Management** — View balances across chains (Base, Solana, Ethereum) and manage yield-bearing assets
-- 🌾 **Yield Farming** — Deposit idle capital into Jubilee Vaults (jBTCi, jUSDi, jETHs, jSOLi) to earn sustainable yield
-- 🔄 **Native Swaps** — Swap tokens (ETH, USDC, cbBTC, WETH, WBTC) on Base via 0x aggregator with best-price routing
-- ⚔️ **War Room** — Generate daily "Steward's Reports" analyzing git activity, treasury health, and strategic priorities
-- 🤲 **First Fruits** — Programmable stewardship logic to donate yield to charitable causes or other agents
-- 🔗 **Multi-Chain** — Supports Base (mainnet), Solana (devnet), Ethereum (testnet)
-
-## Quick Start
-
-### Installation
-
-#### Option A: OpenClaw Manual Install
-
-1. Navigate to your OpenClaw skills directory:
-```bash
-cd ~/.openclaw/workspace/skills
-```
-
-2. Clone this repository:
-```bash
-git clone https://github.com/Jubilee-Protocol/openclaw-skill-jubilee.git jubilee
-```
-
-3. Install dependencies:
-```bash
-cd jubilee && npm install
-```
-
-4. Configure environment (see [Configuration](#configuration) below)
-
-#### Option B: Jubilee Agent (Pre-installed)
-
-If you're using the official `jubilee-agent` repository, this skill is included by default.
+---
 
 ## Configuration
 
-### 1. Environment Variables
+### Minimal Setup (Base only — most users start here)
 
-Create a `.env` file in the skill root (see `.env.example`):
+Create a `.env` file with just **2 lines** to start:
+
 ```bash
-# RPC Providers (Optional - defaults to public endpoints)
-RPC_BASE=https://mainnet.base.org
-RPC_BASE_SEPOLIA=https://sepolia.base.org
-
-# Wallet (Managed by OpenClaw)
-WALLET_PATH=/path/to/custom/wallet.json
-
-# Default chain for operations
+WALLET_PATH=~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json
 DEFAULT_CHAIN=base
-
-# Debug mode (verbose logging)
-DEBUG=false
-
-# 0x Swap API Key (optional but recommended - increases rate limits)
-# Get yours at: https://0x.org/docs/introduction/getting-started
-ZERO_EX_API_KEY=your_0x_api_key_here
 ```
 
-### 2. Wallet Setup
-
-The skill expects a wallet file in OpenClaw's standard location:
-```
-~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json
-```
-
-**Wallet Format:**
+Create the wallet file at that path:
 ```json
-{
-  "privateKey": "0xYOUR_PRIVATE_KEY_HERE"
-}
+{ "privateKey": "0xYOUR_PRIVATE_KEY_HERE" }
 ```
 
-**Security:** Never commit this file to version control!
+> **⚠️ Never commit wallet files to git.** They are auto-excluded via `.gitignore`.
 
-### 3. Fund Your Agent
+### Add More Chains (copy only what you need)
 
-#### Testnet (Recommended for testing)
-1. Get Base Sepolia ETH: [Superchain Faucet](https://www.alchemy.com/faucets/base-sepolia)
-2. Get testnet USDC: [Circle Faucet](https://faucet.circle.com/)
+<details>
+<summary><strong>🦄 Uniswap (Ethereum)</strong> — works immediately, no API key needed</summary>
 
-#### Mainnet (Production)
-1. Send ETH to agent address (for gas)
-2. Send USDC/USDT to agent address (for deposits)
-
-## Usage
-
-### Natural Language (via Claude/Agent)
-
-You can ask your agent to perform these tasks naturally:
-
-- **"Check our treasury status"** → Runs: `npm run status`
-- **"Run the morning war room report"** → Runs: `npm run war-room`
-- **"Deposit 100 USDC into the vault"** → Runs: `npm run deposit 100 USDC`
-- **"What's our current balance?"** → Runs: `npm run balance`
-- **"Swap 0.01 ETH to USDC"** → Runs: `npm run swap 0.01 ETH USDC`
-- **"Donate 10 USDC to [address]"** → Runs: `npm run donate-yield 10 0x...`
-
-### Direct CLI Usage
 ```bash
-# Check vault stats (TVL, APY)
-npm run status [chain]
-
-# View treasury balance
-npm run balance [chain]
-
-# Deposit assets
-npm run deposit <amount> <asset> [chain]
-# Example: npm run deposit 100 USDC base
-
-# Withdraw assets
-npm run withdraw <amount> <vault> [chain]
-# Example: npm run withdraw 50 jUSDi base
-
-# Swap tokens (via 0x aggregator)
-npm run swap <amount> <fromToken> <toToken> [chain]
-# Example: npm run swap 0.01 ETH USDC base
-# Example: npm run swap 50 USDC cbBTC base
-
-# Donate yield
-npm run donate-yield <amount> <recipient_address> [chain]
-# Example: npm run donate-yield 10 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
-
-# Generate war room report
-npm run war-room [chain]
+# Add to .env — uses free public RPC by default
+RPC_ETHEREUM=https://eth.llamarpc.com
 ```
+Uses the same EVM wallet as Base. No extra setup.
+</details>
+
+<details>
+<summary><strong>🪐 Jupiter (Solana)</strong> — requires free API key</summary>
+
+1. Get a free API key at [portal.jup.ag](https://portal.jup.ag)
+2. Add to `.env`:
+```bash
+JUPITER_API_KEY=your_key_here
+SOLANA_WALLET_PATH=~/.config/solana/id.json
+```
+3. If you don't have a Solana wallet yet:
+```bash
+solana-keygen new
+```
+</details>
+
+<details>
+<summary><strong>⚡ Lightning (Bitcoin)</strong> — requires running LND node</summary>
+
+1. Set up LND: [Lightning Agent Tools](https://github.com/lightninglabs/lightning-agent-tools)
+2. Add to `.env`:
+```bash
+LND_REST_HOST=https://localhost:8080
+LND_MACAROON_PATH=~/.lnd/data/chain/bitcoin/mainnet/admin.macaroon
+LND_TLS_CERT_PATH=~/.lnd/tls.cert
+```
+3. Optional — install `lnget` for L402 payments:
+```bash
+go install github.com/lightninglabs/lightning-agent-tools/cmd/lnget@latest
+```
+</details>
+
+<details>
+<summary><strong>🔑 Optional API Keys</strong> — improve rate limits</summary>
+
+```bash
+# 0x Swap API (Base swaps) — free at https://0x.org
+ZERO_EX_API_KEY=your_key_here
+
+# Custom RPC endpoints (replace public defaults)
+RPC_BASE=https://your-rpc.example.com
+RPC_BASE_SEPOLIA=https://sepolia.base.org
+```
+</details>
+
+### Fund Your Agent
+
+| Network | What to Send | Where to Get Test Funds |
+|---------|-------------|------------------------|
+| **Base / Ethereum** | ETH (for gas) + USDC/USDT | [Superchain Faucet](https://www.alchemy.com/faucets/base-sepolia), [Circle Faucet](https://faucet.circle.com/) |
+| **Solana** | SOL (for fees) | [Solana Faucet](https://faucet.solana.com/) |
+| **Lightning** | Fund channels via your LND node | N/A (mainnet only) |
+
+---
+
+## How Agents Interface With This Skill
+
+### For AI Agents (Claude Code, OpenClaw, Dexter, etc.)
+
+The skill is designed for **zero-friction agent integration**:
+
+1. **`SKILL.md`** — The agent reads this file to discover all available tools, their exact CLI syntax, when to use each one, and error handling patterns. This is the prompt engineering layer.
+
+2. **Natural language → CLI** — The agent translates user intent into the correct `npm run` command:
+
+| What You Say | What the Agent Runs |
+|-------------|-------------------|
+| "Check our treasury" | `npm run status` |
+| "What's our balance?" | `npm run balance` |
+| "Deposit 100 USDC" | `npm run deposit 100 USDC base` |
+| "Swap 0.01 ETH to USDC" | `npm run swap 0.01 ETH USDC` |
+| "Swap 100 USDC to WETH on Uniswap" | `npm run uniswap-swap 100 USDC WETH ethereum` |
+| "Swap 1 SOL to USDC" | `npm run jupiter-swap 1 SOL USDC` |
+| "Pay this Lightning invoice" | `npm run lightning-pay pay lnbc...` |
+| "Check Lightning balance" | `npm run lightning-balance` |
+| "Run the war room" | `npm run war-room` |
+| "Donate 10 USDC to 0x..." | `npm run donate-yield 10 0x...` |
+
+3. **Structured output** — Every command outputs chalk-formatted results with clear success/failure indicators (`✓`, `✗`, `❌`) that agents parse reliably.
+
+4. **Graceful degradation** — If a chain isn't configured (no wallet, no API key, no LND node), commands print a helpful setup message instead of crashing. Agents can detect this and either skip that chain or ask the user to configure it.
+
+### For Humans (CLI)
+
+Every tool works directly from the terminal:
+
+```bash
+# ── Treasury ──────────────────────────────────
+npm run status [chain]              # Vault health (TVL, APY)
+npm run balance [chain]             # Your portfolio
+npm run war-room [chain]            # Strategic report
+
+# ── Deposit & Withdraw ────────────────────────
+npm run deposit <amount> <asset> [chain]
+npm run withdraw <amount> <vault> [chain]
+
+# ── Swap (pick your chain) ────────────────────
+npm run swap <amt> <from> <to> [chain]           # 0x (Base)
+npm run uniswap-swap <amt> <from> <to> [chain]   # Uniswap (ETH/Base)
+npm run jupiter-swap <amt> <from> <to>            # Jupiter (Solana)
+
+# ── Lightning (Bitcoin) ──────────────────────
+npm run lightning-pay pay <invoice> [max_sats]    # Pay invoice
+npm run lightning-balance                         # Node balance
+npm run lightning-pay decode <invoice>            # Decode invoice
+npm run lightning-pay lnget <url> [max_sats]      # L402 request
+
+# ── Giving ────────────────────────────────────
+npm run donate-yield <amount> <address> [chain]
+```
+
+Every command shows **usage help** if run without arguments — try `npm run uniswap-swap` or `npm run jupiter-swap` to see examples.
+
+---
 
 ## Directory Structure
+
 ```
 jubilee-openclaw-skill/
-├── lib/                        # Core implementation
-│   ├── utils.js               # Wallet & provider utilities
-│   ├── validators.js          # Input validation
-│   ├── status.js              # Vault status checker
-│   ├── balance.js             # Treasury balance viewer
-│   ├── deposit.js             # Deposit handler
-│   ├── withdraw.js            # Withdrawal handler
-│   ├── swap.js                # DEX swap via 0x API
-│   ├── donate.js              # Yield donation handler
-│   └── war-room.js            # Strategic report generator
-├── test/                       # Integration tests
+├── SKILL.md               ← Agent reads this to discover tools
+├── config.js              ← Contract addresses, ABIs, protocol configs
+├── .env.example           ← Copy to .env and fill in your keys
+├── lib/
+│   ├── status.js          # npm run status
+│   ├── balance.js         # npm run balance
+│   ├── deposit.js         # npm run deposit
+│   ├── withdraw.js        # npm run withdraw
+│   ├── swap.js            # npm run swap (0x, Base)
+│   ├── uniswap-swap.js    # npm run uniswap-swap (Ethereum/Base)
+│   ├── jupiter-swap.js    # npm run jupiter-swap (Solana)
+│   ├── lightning-pay.js   # npm run lightning-pay (Bitcoin)
+│   ├── donate.js          # npm run donate-yield
+│   ├── war-room.js        # npm run war-room
+│   ├── utils.js           # Wallet loading, providers, formatting
+│   └── validators.js      # Input validation
+├── test/
 │   └── integration.test.js
-├── config.js                   # Contract addresses & ABIs
-├── package.json                # Dependencies & scripts
-├── SKILL.md                    # Prompt engineering layer (for AI)
-├── README.md                   # This file (for humans)
-├── INSTALL.md                  # Step-by-step setup guide
-├── PROJECT_SUMMARY.md          # Technical overview
-├── .env.example               # Environment template
-└── LICENSE                     # MIT License
+├── package.json
+└── LICENSE
 ```
 
 ## Contract Addresses
@@ -194,182 +232,66 @@ jubilee-openclaw-skill/
 |----------|---------|
 | **jSOLi Vault** | `Es3R4iMtdc3yHyKj9WxuK9imtSkDRw17816pRSbeVHsp` |
 
-Full deployment details: [Jubilee Protocol Docs](https://docs.jubileeprotocol.xyz)
+---
+
+## Troubleshooting
+
+| Problem | Fix |
+|---------|-----|
+| `Wallet file not found` | Create wallet at the path in your `.env`, or set `WALLET_PATH` |
+| `Insufficient funds for gas` | Send ETH to your agent address (0.01 ETH minimum) |
+| `RPC connection failed` | Set a custom `RPC_BASE=https://...` in `.env` |
+| `JUPITER_API_KEY is required` | Get a free key at [portal.jup.ag](https://portal.jup.ag) |
+| `Lightning node not detected` | Set `LND_REST_HOST` + `LND_MACAROON_PATH` in `.env`, or install `lncli` |
+| `Transaction would likely fail` | Check balance (`npm run balance`) and vault status (`npm run status`) |
+| `Invalid input` errors | Amounts must be positive numbers; addresses must be valid (0x... or base58) |
+
+**Debug mode** — add `DEBUG=true` to `.env` for verbose logging.
+
+---
 
 ## Testing
 
-### Run Integration Tests
 ```bash
-npm test
+npm test                        # Run integration tests
+npm run status baseSepolia      # Check testnet connection
+npm run balance baseSepolia     # View testnet balance
 ```
 
-Tests include:
-- ✅ Vault connection & status retrieval
-- ✅ Balance calculations & formatting
-- ✅ Error handling for edge cases
-- ✅ RPC connectivity
-
-**Note:** Deposit/withdrawal tests run on testnets only to avoid real fund usage.
-
-### Manual Testing Flow
-
-1. **Start with testnet:**
-```bash
-npm run status baseSepolia
-```
-
-2. **Check your balance:**
-```bash
-npm run balance baseSepolia
-```
-
-3. **Test a deposit (testnet):**
-```bash
-npm run deposit 10 USDC baseSepolia
-```
-
-4. **Verify new balance:**
-```bash
-npm run balance baseSepolia
-```
-
-5. **Test withdrawal:**
-```bash
-npm run withdraw 5 jUSDi baseSepolia
-```
-
-6. **Generate war room report:**
-```bash
-npm run war-room baseSepolia
-```
-
-## Error Handling & Troubleshooting
-
-### Common Issues
-
-#### 1. "Invalid input" errors
-**Solution:** The skill validates all inputs. Check:
-- Amounts must be positive numbers
-- Addresses must be valid Ethereum addresses (0x...)
-- Chain names must be: `base`, `baseSepolia`, `solana`, etc.
-
-#### 2. "Wallet file not found"
-**Solution:** Create wallet at `~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json`
-
-#### 3. "Insufficient funds for gas"
-**Solution:** Fund wallet with ETH (0.01 ETH minimum recommended)
-
-#### 4. "RPC connection failed"
-**Solution:** Configure custom RPC in `.env`:
-```bash
-RPC_BASE=https://your-custom-rpc-url
-```
-
-#### 5. "Transaction would likely fail"
-**Solution:** Check:
-- Asset balance (via `npm run balance`)
-- Token approval status
-- Vault health (via `npm run status`)
-
-### Debug Mode
-
-Enable verbose logging:
-```bash
-DEBUG=true npm run balance
-```
-
-## Stewardship Principles
-
-This skill embodies "Nasdaq meets Sistine Chapel":
-
-1. **Capital Preservation** — Never withdraw principal, only yield
-2. **Sustainable Yield** — Build endowments that last 100+ years
-3. **Mission Alignment** — Direct yield toward Kingdom purposes
-4. **Transparency** — All transactions on-chain and auditable
-5. **Humility** — Technology serves people, not the reverse
+---
 
 ## Security
 
-Security is the cornerstone of the Jubilee Protocol. Our approach is multi-layered, combining battle-tested code, rigorous auditing, and economic incentives to protect user funds.
-
 ### Smart Contract Security
+- **92/100 audit score** on all core contracts
+- **ERC-4626 standard** — battle-tested vault pattern
+- **No bridge risk** — independent vault instances per chain
+- **Circuit breakers** — auto-pause on detected exploits
 
-- **Audits**: All core contracts have achieved a **92/100 audit score** and have undergone comprehensive testing, including stress tests and fuzz testing. We are committed to continuous audits for all new products and major upgrades.
-- **Inherited Security**: By deploying on established L2s like Base and zkSync, Jubilee inherits the security of their underlying infrastructure, which has been battle-tested with billions of dollars in value.
-- **Elimination of Bridge Risk**: By design, the protocol does not operate its own cross-chain asset bridge. Vaults on different chains are independent instances, which completely removes the risk of a native bridge exploit, a common and catastrophic failure point in DeFi.
-- **ERC-4626 Standard**: By building on a widely adopted standard, we reduce smart contract risk and benefit from the extensive auditing and community review of the standard itself.
-- **Circuit Breakers**: Automated safety mechanisms are built into each vault to pause operations in the event of extreme market volatility or detected exploits.
+### Wallet Security
 
-### Operational Security
+| Use Case | Recommendation |
+|----------|---------------|
+| **Testing / Learning** | Plaintext key in JSON (current default) ✅ |
+| **Small treasury (<$1K)** | Plaintext key in JSON ✅ |
+| **Production (>$10K)** | Encrypted keystore, AWS KMS, or MPC ⚠️ |
+| **Institutional** | Hardware wallet + multi-sig 🔒 |
 
-- ✅ Private keys never exposed in logs or error messages
-- ✅ Wallet files automatically excluded via `.gitignore`
-- ✅ Environment variables for all sensitive configuration
-- ✅ Testnet-first development flow
-- ✅ Input validation on all user inputs
-- ✅ Gas estimation before transaction submission
+### Reporting Vulnerabilities
 
-### ⚠️ Wallet Security Notice
-
-**Current Implementation: Development Mode**
-
-This skill currently uses plaintext private keys stored in JSON files for ease of development and testing. This approach is:
-
-**✅ Acceptable for:**
-- Testing on testnets (Base Sepolia, Solana Devnet)
-- Development and learning environments
-- Low-value agents with treasuries under $1,000
-- Personal experimental projects
-
-**❌ NOT acceptable for:**
-- Production agents managing treasuries over $10,000
-- Institutional or organizational use
-- Multi-user or shared environments
-- Unattended agents with significant holdings
-
-### Production Security Recommendations
-
-For production deployments with meaningful capital:
-
-1. **Use encrypted JSON keystores** with strong passwords stored in secure vaults
-2. **Store wallet files in encrypted storage** (e.g., AWS KMS, HashiCorp Vault)
-3. **Implement hardware wallet integration** for high-value signing operations
-4. **Use MPC/Fireblocks** for institutional-grade custody solutions
-5. **Enable multi-signature requirements** for large transactions
-6. **Implement transaction limits** and approval workflows
-7. **Set up monitoring and alerting** for suspicious activity
-
-### Security Roadmap
-
-| Timeline | Feature | Status |
-|----------|---------|--------|
-| **Q2 2026** | Encrypted JSON wallet support with password protection | 🔄 In Progress |
-| **Q3 2026** | Hardware wallet integration (Ledger, Trezor) | 📋 Planned |
-| **Q4 2026** | MPC custody integration (Fireblocks) | 📋 Planned |
-| **2027** | Multi-signature transaction support | 📋 Backlog |
-
-### Compliance
-
-- **FASB ASU 2023-08**: User-facing dashboards provide necessary reporting tools for institutions to comply with FASB accounting standards for crypto assets.
-- **Audit Trail**: All transactions are permanently recorded on-chain and can be exported for compliance purposes.
-
-### Reporting Security Issues
-
-If you discover a security vulnerability, please email: **security@jubileeprotocol.xyz**
-
-**Do NOT** open a public GitHub issue. We take all security reports seriously and will respond within 24 hours.
+Email **security@jubileeprotocol.xyz** — do not open public issues.
 
 ---
 
 ## Roadmap
 
 - [x] Base mainnet support (jUSDi, jBTCi)
-- [x] Balance & status checking
-- [x] Deposit & withdrawal flows
-- [x] War room strategic reports
-- [x] Yield donation
-- [x] Input validation & error handling
-- [x] Native DEX swaps via 0x API (ETH, USDC, cbBTC, WETH, WBTC)
+- [x] Treasury management (balance, status, deposit, withdraw)
+- [x] War room strategic reports & yield donation
+- [x] DEX swaps via 0x API (Base)
+- [x] Uniswap V3 swaps (Ethereum & Base)
+- [x] Jupiter Ultra swaps (Solana)
+- [x] Lightning Network payments (Bitcoin)
 - [ ] Solana mainnet support (jSOLi)
 - [ ] Ethereum mainnet support (jETHs)
 - [ ] Automated yield harvesting (cron)
@@ -378,26 +300,19 @@ If you discover a security vulnerability, please email: **security@jubileeprotoc
 
 ## Contributing
 
-We welcome contributions from stewardship-aligned builders!
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Test thoroughly on testnet
-4. Commit changes (`git commit -m 'Add amazing feature'`)
-5. Push to branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
+1. Fork → branch → test on testnet → PR
+2. See [INSTALL.md](INSTALL.md) for development setup
 
 ## Support
 
-- 🌐 **Website:** [jubileeprotocol.xyz](https://jubileeprotocol.xyz)
-- 📧 **Email:** contact@jubileeprotocol.xyz
-- 🐦 **Twitter:** [@JubileeProtocol](https://twitter.com/JubileeProtocol)
-- 📖 **Docs:** [docs.jubileeprotocol.xyz](https://docs.jubileeprotocol.xyz)
-- 🐛 **Issues:** [GitHub Issues](https://github.com/Jubilee-Protocol/openclaw-skill-jubilee/issues)
+- 🌐 [jubileeprotocol.xyz](https://jubileeprotocol.xyz)
+- 📖 [docs.jubileeprotocol.xyz](https://docs.jubileeprotocol.xyz)
+- 🐦 [@JubileeProtocol](https://twitter.com/JubileeProtocol)
+- 🐛 [GitHub Issues](https://github.com/Jubilee-Protocol/openclaw-skill-jubilee/issues)
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
 
 ## Built By
 

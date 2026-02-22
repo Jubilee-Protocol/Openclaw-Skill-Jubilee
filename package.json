@@ -11,6 +11,10 @@
     "donate-yield": "node lib/donate.js",
     "war-room": "node lib/war-room.js",
     "swap": "node lib/swap.js",
+    "uniswap-swap": "node lib/uniswap-swap.js",
+    "jupiter-swap": "node lib/jupiter-swap.js",
+    "lightning-pay": "node lib/lightning-pay.js",
+    "lightning-balance": "node lib/lightning-pay.js balance",
     "test": "node test/integration.test.js"
   },
   "keywords": [
@@ -19,13 +23,18 @@
     "defi",
     "openclaw",
     "ai-agents",
-    "treasury-management"
+    "treasury-management",
+    "uniswap",
+    "jupiter",
+    "lightning",
+    "multi-chain"
   ],
   "author": "Jubilee Labs",
   "license": "MIT",
   "dependencies": {
     "@solana/web3.js": "^1.95.8",
     "axios": "^1.7.9",
+    "bs58": "^5.0.0",
     "chalk": "^4.1.2",
     "dotenv": "^16.4.7",
     "ethers": "^6.10.0"
