@@ -54,36 +54,51 @@ Agents have burn rates (API costs, hosting, gas). Jubilee lets agents deposit id
 
 ## Configuration
 
-### Minimal Setup (Base only — most users start here)
+### What Do I Actually Need?
 
-Create a `.env` file with just **2 lines** to start:
+| What You Want to Do | `.env` Requirements |
+|---------------------|-------------------|
+| Read vault status & balances | **Nothing.** Works out of the box. |
+| Swap / deposit / withdraw on **Base** | `WALLET_PATH` (EVM private key) |
+| Swap on **Ethereum** via Uniswap | `WALLET_PATH` (same EVM wallet) |
+| Swap on **Solana** via Jupiter | `JUPITER_API_KEY` (free) + `SOLANA_WALLET_PATH` |
+| Pay **Lightning** invoices | `LND_REST_HOST` + `LND_MACAROON_PATH` + `LND_TLS_CERT_PATH` |
+
+Everything else in `.env.example` is **optional tuning** (custom RPCs, debug mode, default chain).
+
+### Step 1: Create `.env`
+
+```bash
+cp .env.example .env
+```
+
+For most users (Base only), add just one line:
 
 ```bash
 WALLET_PATH=~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json
-DEFAULT_CHAIN=base
 ```
 
-Create the wallet file at that path:
+Then create the wallet file at that path:
 ```json
 { "privateKey": "0xYOUR_PRIVATE_KEY_HERE" }
 ```
 
 > **⚠️ Never commit wallet files to git.** They are auto-excluded via `.gitignore`.
 
-### Add More Chains (copy only what you need)
+### Step 2: Add More Chains (only if you need them)
 
 <details>
-<summary><strong>🦄 Uniswap (Ethereum)</strong> — works immediately, no API key needed</summary>
+<summary><strong>🦄 Uniswap (Ethereum)</strong> — zero extra config</summary>
 
+Uses the same `WALLET_PATH` as Base. Public Ethereum RPC is built in.
+Optionally add a faster RPC:
 ```bash
-# Add to .env — uses free public RPC by default
-RPC_ETHEREUM=https://eth.llamarpc.com
+RPC_ETHEREUM=https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY
 ```
-Uses the same EVM wallet as Base. No extra setup.
 </details>
 
 <details>
-<summary><strong>🪐 Jupiter (Solana)</strong> — requires free API key</summary>
+<summary><strong>🪐 Jupiter (Solana)</strong> — requires free API key + Solana wallet</summary>
 
 1. Get a free API key at [portal.jup.ag](https://portal.jup.ag)
 2. Add to `.env`:
