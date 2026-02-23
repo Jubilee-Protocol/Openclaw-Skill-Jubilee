@@ -19,13 +19,17 @@ cd jubilee && npm install
 cp .env.example .env  # then edit .env with your keys
 ```
 
-That's it. The skill works immediately for **read-only** operations (status, balance, war room) with zero configuration. Only **write** operations (swap, deposit, withdraw) require wallet and API keys.
+That's it. **No other dependencies required.** Read-only commands (`status`, `balance`, `war-room`) work immediately with zero configuration. Write operations (swap, deposit, withdraw) require a wallet and API keys — see [Configuration](#configuration) below.
+
+> **Do I need OpenClaw?** No. Jubilee is a **standalone Node.js project**. Every command runs via `npm run <command>` from the terminal. Any AI agent that can execute shell commands (Claude Code, Cursor, Windsurf, Dexter, etc.) can use it today — just point the agent at `SKILL.md` and it discovers all tools automatically.
+>
+> **Want to use OpenClaw?** Optional. If you're already in the OpenClaw ecosystem, clone Jubilee into `~/.openclaw/workspace/skills/jubilee` and OpenClaw will auto-discover it. But it's a convenience, not a requirement.
 
 ---
 
 ## What Is This?
 
-Jubilee is a **skill** (plugin) for AI coding agents that gives them the ability to manage a treasury across **4 chains**:
+Jubilee is a **self-contained financial toolkit** for AI agents that gives them the ability to manage a treasury across **4 chains**:
 
 | Chain | Protocol | What the Agent Can Do | Required Config |
 |-------|----------|----------------------|-----------------|
