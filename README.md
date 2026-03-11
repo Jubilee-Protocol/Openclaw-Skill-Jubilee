@@ -37,6 +37,7 @@ Jubilee is a **self-contained financial toolkit** for AI agents that gives them 
 | **Ethereum** | Uniswap V3 | Swap tokens | EVM wallet |
 | **Solana** | Jupiter Ultra | Swap any SPL token | Solana wallet + Jupiter API key |
 | **Bitcoin** | Lightning (LND) | Pay invoices, L402 API payments | Running LND node |
+| **Stacks** | NoCodeClarityAI | sBTC yield, PoX stacking, ALEX swaps | `NOCODECLARITY_URL` + `ORCHESTRATOR_SECRET` |
 
 ### The Core Idea
 
@@ -171,6 +172,9 @@ The skill is designed for **zero-friction agent integration**:
 | "Swap 1 SOL to USDC" | `npm run jupiter-swap 1 SOL USDC` |
 | "Pay this Lightning invoice" | `npm run lightning-pay pay lnbc...` |
 | "Check Lightning balance" | `npm run lightning-balance` |
+| "Check my Stacks wallet" | `npm run stacks-snapshot ST1PQ...` |
+| "Deposit sBTC for yield" | `npm run stacks-swarm goal "deposit my sBTC" abc-123` |
+| "Stack my STX" | `npm run stacks-swarm goal "stack my STX for 2 cycles" abc-123` |
 | "Run the war room" | `npm run war-room` |
 | "Donate 10 USDC to 0x..." | `npm run donate-yield 10 0x...` |
 
@@ -203,6 +207,14 @@ npm run lightning-balance                         # Node balance
 npm run lightning-pay decode <invoice>            # Decode invoice
 npm run lightning-pay lnget <url> [max_sats]      # L402 request
 
+# ── Stacks (NoCodeClarityAI) ─────────────────
+npm run stacks-snapshot <STX_ADDRESS>                 # Chain snapshot
+npm run stacks-swarm health                           # Orchestrator status
+npm run stacks-swarm goal "<goal>" <strategy_id>      # Submit DeFi goal
+npm run stacks-swarm tasks                            # List tasks
+npm run stacks-swarm approve <task_id>                # Approve task
+npm run stacks-swarm pause                            # Kill switch
+
 # ── Giving ────────────────────────────────────
 npm run donate-yield <amount> <address> [chain]
 ```
@@ -227,6 +239,8 @@ jubilee-openclaw-skill/
 │   ├── uniswap-swap.js    # npm run uniswap-swap (Ethereum/Base)
 │   ├── jupiter-swap.js    # npm run jupiter-swap (Solana)
 │   ├── lightning-pay.js   # npm run lightning-pay (Bitcoin)
+│   ├── stacks-snapshot.js # npm run stacks-snapshot (Stacks) 🆕
+│   ├── stacks-swarm.js    # npm run stacks-swarm (NoCodeClarityAI) 🆕
 │   ├── donate.js          # npm run donate-yield
 │   ├── war-room.js        # npm run war-room
 │   ├── utils.js           # Wallet loading, providers, formatting
@@ -312,6 +326,7 @@ Email **security@jubileeprotocol.xyz** — do not open public issues.
 - [x] Uniswap V3 swaps (Ethereum & Base)
 - [x] Jupiter Ultra swaps (Solana)
 - [x] Lightning Network payments (Bitcoin)
+- [x] Stacks chain snapshot + NoCodeClarityAI swarm integration 🆕
 - [ ] Solana mainnet support (jSOLi)
 - [ ] Ethereum mainnet support (jETHs)
 - [ ] Automated yield harvesting (cron)
