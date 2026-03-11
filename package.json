@@ -15,6 +15,8 @@
     "jupiter-swap": "node lib/jupiter-swap.js",
     "lightning-pay": "node lib/lightning-pay.js",
     "lightning-balance": "node lib/lightning-pay.js balance",
+    "stacks-snapshot": "node lib/stacks-snapshot.js",
+    "stacks-swarm": "node lib/stacks-swarm.js",
     "test": "node test/integration.test.js"
   },
   "keywords": [
@@ -27,6 +29,8 @@
     "uniswap",
     "jupiter",
     "lightning",
+    "stacks",
+    "sbtc",
     "multi-chain"
   ],
   "author": "Jubilee Labs",

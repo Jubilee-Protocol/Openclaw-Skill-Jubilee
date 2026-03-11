@@ -92,6 +92,17 @@ module.exports = {
     tlsCertPath: process.env.LND_TLS_CERT_PATH || '~/.lnd/tls.cert'
   },
 
+  // Stacks / NoCodeClarityAI Configuration
+  stacks: {
+    network: process.env.STACKS_NETWORK || 'testnet',
+    hiroApi: process.env.STACKS_NETWORK === 'mainnet'
+      ? 'https://api.hiro.so'
+      : 'https://api.testnet.hiro.so',
+    hiroApiKey: process.env.HIRO_API_KEY || '',
+    orchestratorUrl: process.env.NOCODECLARITY_URL || 'http://localhost:3001',
+    orchestratorSecret: process.env.ORCHESTRATOR_SECRET || '',
+  },
+
   // Asset addresses by network
   assets: {
     base: {

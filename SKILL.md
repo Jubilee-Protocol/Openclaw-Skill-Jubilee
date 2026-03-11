@@ -16,6 +16,7 @@ If `Yield ≥ Burn Rate → Agent Lives Forever`
 - **Ethereum (Mainnet):** swaps via Uniswap
 - **Solana (Mainnet/Devnet):** `jSOLi` — swaps via Jupiter
 - **Bitcoin (Lightning Network):** payments via LND
+- **Stacks (Mainnet/Testnet):** sBTC yield, PoX stacking, ALEX swaps — via NoCodeClarityAI 🆕
 
 ## Tools
 
@@ -249,6 +250,69 @@ npm run lightning-pay lnget https://api.example.com/data 500
 - Bitcoin-denominated payments
 - Agent-to-agent micropayments
 - Checking Lightning node health
+
+### `jubilee stacks-snapshot`
+**Purpose:** Capture a real-time Stacks chain snapshot — wallet balance, network state, and sBTC peg health.
+
+**Usage:**
+```bash
+npm run stacks-snapshot <STX_ADDRESS>
+```
+
+**Example:**
+```bash
+npm run stacks-snapshot ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+```
+
+**Output:**
+- STX balance (available + locked)
+- Stacks/Bitcoin block heights
+- sBTC peg health score (0–100)
+
+**When to use:**
+- Before submitting a goal to the swarm
+- Daily Stacks position health checks
+- Verifying sBTC peg conditions
+
+### `jubilee stacks-swarm`
+**Purpose:** Interact with the NoCodeClarityAI agent swarm — submit DeFi goals, monitor tasks, approve/reject, and kill switch.
+
+**Usage:**
+```bash
+npm run stacks-swarm <command> [args]
+```
+
+**Commands:**
+```bash
+# Check orchestrator status
+npm run stacks-swarm health
+
+# List active strategies
+npm run stacks-swarm strategies
+
+# Submit a goal
+npm run stacks-swarm goal "deposit my sBTC for yield" <strategy_id>
+
+# List recent tasks
+npm run stacks-swarm tasks
+
+# Approve / reject a NEEDS_HUMAN task
+npm run stacks-swarm approve <task_id>
+npm run stacks-swarm reject <task_id>
+
+# Kill switch — halt all active tasks
+npm run stacks-swarm pause
+```
+
+**Requirements:**
+- Running NoCodeClarityAI orchestrator (`NOCODECLARITY_URL` in `.env`)
+- `ORCHESTRATOR_SECRET` for authenticated endpoints
+
+**When to use:**
+- Autonomous sBTC yield farming
+- PoX stacking and delegation
+- DEX swaps on ALEX
+- Any Stacks DeFi operation with risk-gated execution
 
 ## Error Handling
 
