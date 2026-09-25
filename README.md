@@ -76,7 +76,7 @@ cp .env.example .env
 For most users (Base only), add just one line:
 
 ```bash
-WALLET_PATH=~/.openclaw/workspace/setup_wallet_dir_new/wallets/agent_wallet.json
+WALLET_PATH=/path/to/your/agent_wallet.json   # any path works; no fixed layout required
 ```
 
 Then create the wallet file at that path:
@@ -297,7 +297,7 @@ npm run balance baseSepolia     # View testnet balance
 ## Security
 
 ### Smart Contract Security
-- **92/100 audit score** on all core contracts
+- **Audit status** is tracked per vault repo in its `audit/` directory — verify before large deposits
 - **ERC-4626 standard** — battle-tested vault pattern
 - **No bridge risk** — independent vault instances per chain
 - **Circuit breakers** — auto-pause on detected exploits
@@ -341,7 +341,7 @@ Email **security@jubileeprotocol.xyz** — do not open public issues.
 ## Support
 
 - 🌐 [jubileeprotocol.xyz](https://jubileeprotocol.xyz)
-- 📖 [docs.jubileeprotocol.xyz](https://docs.jubileeprotocol.xyz)
+- 📖 [jubileeprotocol.xyz](https://jubileeprotocol.xyz)
 - 🐦 [@JubileeProtocol](https://twitter.com/JubileeProtocol)
 - 🐛 [GitHub Issues](https://github.com/Jubilee-Protocol/openclaw-skill-jubilee/issues)
 

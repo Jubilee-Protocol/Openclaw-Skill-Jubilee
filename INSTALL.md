@@ -437,10 +437,10 @@ npm run status
 ### Learn More
 - Read the full [README.md](README.md)
 - Review [SKILL.md](SKILL.md) for AI agent integration
-- Explore [Jubilee Protocol Docs](https://docs.jubileeprotocol.xyz)
+- Explore [Jubilee Protocol](https://jubileeprotocol.xyz)
 
 ### Join the Community
-- [Discord](https://discord.gg/jubilee)
+- [GitHub](https://github.com/Jubilee-Protocol)
 - [Twitter](https://twitter.com/JubileeProtocol)
 - [GitHub](https://github.com/Jubilee-Protocol)
 
