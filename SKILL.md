@@ -452,13 +452,13 @@ Create a cron job or GitHub Action:
 
 1. **Private Keys:** Never commit wallet files to git
 2. **Gas Management:** Maintain minimum 0.01 ETH for operations
-3. **Vault Audits:** All vaults are audited (92/100 score)
+3. **Vault Audits:** audit status is tracked per vault repo (`audit/`); verify before large deposits
 4. **Contract Verification:** All contracts verified on BaseScan
 
 ## Support
 
-- **Documentation:** https://docs.jubileeprotocol.xyz
-- **Discord:** https://discord.gg/jubilee
+- **Documentation:** https://jubileeprotocol.xyz
+- **GitHub:** https://github.com/Jubilee-Protocol
 - **GitHub:** https://github.com/Jubilee-Protocol
 
 ---
